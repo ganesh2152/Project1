@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage("checkout Code") {
             steps {
-                git url:'https://github.com/sibeshpatel9490/streamlitapp.git', branch:'main'
+                git url:'https://github.com/ganesh2152/Project1.git', branch:'main'
             }
         }
         stage("Cleanup Stage") {
