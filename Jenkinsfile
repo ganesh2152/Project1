@@ -1,19 +1,42 @@
 pipeline {
-    agent any
+    agent {
+        node {
+            label 'JenkinsSlaveNodeLabel'
+        }
+    }
+    
     stages {
-        stage("checkout Code") {
-            steps{
-                git url:'https://github.com/ganesh2152/Project1.git',branch:'main'
+        stage('Checkout code') {
+            steps {
+                git url: 'https://github.com/ganesh2152/Project1.git', branch: 'main'
             }
         }
-        stage("Build Docker image") {
+        /*
+       stage('cleanup stage') {
             steps {
-                sh'docker build -t myimage .'
+                sh 'docker rmi -f myimage'
+                sh 'docker rm -f $(docker ps -aq)'
             }
         }
-        stage("Create Container") {
+        */
+        stage('Build Docker Image') {
+                        steps {
+                sh 'docker build -t myimage .'
+            }
+        }
+       stage('Build and Push Image') {
             steps {
-                sh'docker run -d -p 8501:8501 myimage'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                    sh 'docker tag myimage $DOCKER_USERNAME/myimage'
+                    sh 'docker push $DOCKER_USERNAME/myimage'
+                }
+                   
+            }
+        }
+        stage('Deploy application to kubernetes') {
+            steps {
+                sh 'kubectl apply -f my-deployment.yml'
             }
         }
     }

@@ -4,4 +4,4 @@ RUN mkdir /myapp
 WORKDIR /myapp
 COPY . .
 EXPOSE 8501
-CMD ["streamlit", "run", "etl.py"]
+CMD ["streamlit", "run", "app.py"]
