@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'JenkinsSlaveNodeLabel'
+            label 'Jenkins_Slave_Node_Label'
         }
     }
     
